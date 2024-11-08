@@ -74,10 +74,14 @@ def basic_cleaners(text):
 
 def transliteration_cleaners(text):
   '''Pipeline for non-English text that transliterates to ASCII.'''
+  text = re.sub(r'[\u064B-\u065F]', '', text)
   text = convert_to_ascii(text)
+  print(f'Ascii content: {text}')
   text = lowercase(text)
   text = collapse_whitespace(text)
-  return text
+  phonemes = phonemize(text, language='ar', backend='espeak', strip=True, preserve_punctuation=False, with_stress=True)
+  phonemes = collapse_whitespace(phonemes)
+  return phonemes
 
 
 def english_cleaners(text):
@@ -97,4 +101,25 @@ def english_cleaners2(text):
   text = expand_abbreviations(text)
   phonemes = phonemize(text, language='en-us', backend='espeak', strip=True, preserve_punctuation=True, with_stress=True)
   phonemes = collapse_whitespace(phonemes)
-  return phonemes
+  return text
+
+
+def arabic_cleaners(text):
+    # Remove diacritics (Harakat)
+    text = re.sub(r'[\u064B-\u065F]', '', text)
+    
+    # Replace Arabic numerals with their corresponding words (optional)
+    text = re.sub(r'٠', 'zero', text)
+    text = re.sub(r'١', 'one', text)
+    text = re.sub(r'٢', 'two', text)
+    text = re.sub(r'٣', 'three', text)
+    text = re.sub(r'٤', 'four', text)
+    text = re.sub(r'٥', 'five', text)
+    text = re.sub(r'٦', 'six', text)
+    text = re.sub(r'٧', 'seven', text)
+    text = re.sub(r'٨', 'eight', text)
+    text = re.sub(r'٩', 'nine', text)
+    # Add more replacements for other Arabic numerals...
+    phonemes = phonemize(text, language='ar', backend='espeak', strip=True, preserve_punctuation=True, with_stress=True)
+    return phonemes
+

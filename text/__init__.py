@@ -1,7 +1,7 @@
 """ from https://github.com/keithito/tacotron """
 from text import cleaners
 from text.symbols import symbols
-
+import re
 
 # Mappings from symbol to numeric ID and vice versa:
 _symbol_to_id = {s: i for i, s in enumerate(symbols)}
@@ -17,9 +17,11 @@ def text_to_sequence(text, cleaner_names):
       List of integers corresponding to the symbols in the text
   '''
   sequence = []
-
+  print(cleaner_names)
   clean_text = _clean_text(text, cleaner_names)
+  print(f'clean text: {clean_text}')
   for symbol in clean_text:
+    print(symbol)
     symbol_id = _symbol_to_id[symbol]
     sequence += [symbol_id]
   return sequence
@@ -52,3 +54,5 @@ def _clean_text(text, cleaner_names):
       raise Exception('Unknown cleaner: %s' % name)
     text = cleaner(text)
   return text
+
+ 
